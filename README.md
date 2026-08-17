@@ -25,8 +25,9 @@ The landing page. A user types a question like *"Has windows-target-1 had any su
 
 ### 2. Running the Flask App
 
-![Terminal running the Flask development server](<img width="1222" height="952" alt="Agentic-01" src="https://github.com/user-attachments/assets/1ece1bb0-229b-4f11-b323-88ed4b961999" />
-)
+Terminal running the Flask development server
+<img width="1222" height="952" alt="Agentic-01" src="https://github.com/user-attachments/assets/1ece1bb0-229b-4f11-b323-88ed4b961999" />
+
 
 `python gui/app.py` starts the Flask dev server, which wraps the same pipeline the CLI (`_main.py`) uses — so the web app and the terminal tool share one core engine instead of duplicating logic.
 
@@ -34,7 +35,10 @@ The landing page. A user types a question like *"Has windows-target-1 had any su
 
 ### 3. About Page
 
-![About page — what the agent does and how the workflow is structured](PASTE_SCREENSHOT_HERE)
+About page — what the agent does and how the workflow is structured
+
+<img width="843" height="902" alt="Agentic-3" src="https://github.com/user-attachments/assets/1316d32d-0903-457f-a183-3d122d6732db" />
+
 
 Explains the request lifecycle: **Natural Language → AI Query Planning → Guardrails → Azure Log Analytics → Threat Analysis**. The AI decides which table, fields, and time range are relevant to the question; those choices are checked against an allow-list before any KQL is allowed to run.
 
@@ -42,7 +46,10 @@ Explains the request lifecycle: **Natural Language → AI Query Planning → Gua
 
 ### 4. Threat Hunt History
 
-![Threat hunt history — every finding ever logged, searchable](PASTE_SCREENSHOT_HERE)
+Threat hunt history — every finding ever logged, searchable
+
+<img width="1013" height="908" alt="Agentic-2" src="https://github.com/user-attachments/assets/3044d40f-b066-494c-bb67-59e67c631189" />
+
 
 Every finding produced by a hunt is appended to `_threats.jsonl` and rendered here, newest first, with full-text search over titles, descriptions, hosts, tags, and IOCs. It's the audit trail — a record of every question asked and every threat the agent surfaced.
 
