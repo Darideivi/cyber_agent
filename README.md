@@ -12,9 +12,9 @@ This project started as a command-line threat hunting agent (`_main.py`) and gre
 
 ### 1. Home Page
 
-![Home page — ask a security question in plain English](PASTE_SCREENSHOT_HERE)
+![Home page — ask a security question in plain English](<img width="1438" height="672" alt="Agentic-1" src="https://github.com/user-attachments/assets/3f9aa795-61ac-455c-bdde-edb85fee4688" />
+)
 
-<img width="1438" height="672" alt="Agentic-1" src="https://github.com/user-attachments/assets/3f9aa795-61ac-455c-bdde-edb85fee4688" />
 
 
 The landing page. A user types a question like *"Has windows-target-1 had any suspicious logons in the last 3 days?"* and hits **Investigate**. The page opens a Server-Sent Events (SSE) stream and shows live progress as the agent works through query planning, guardrail validation, the Log Analytics query, and the AI threat hunt.
