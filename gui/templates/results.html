@@ -1,0 +1,116 @@
+{% if query_context %}
+<section class="panel">
+    <h2>Query Context</h2>
+
+    <dl class="kv-grid">
+        <div>
+            <dt>Table</dt>
+            <dd class="mono">{{ query_context.table_name }}</dd>
+        </div>
+        <div>
+            <dt>Time Range</dt>
+            <dd>{{ query_context.time_range_hours }} hours</dd>
+        </div>
+    </dl>
+
+    <div class="fields-row">
+        <dt>Fields</dt>
+        <dd>
+            <div class="chip-row">
+                {% for field in query_context.fields.split(',') %}
+                    <span class="chip">{{ field.strip() }}</span>
+                {% endfor %}
+            </div>
+        </dd>
+    </div>
+
+    {% if query_context.rationale %}
+    <div class="rationale">
+        <strong>Rationale</strong>
+        {{ query_context.rationale }}
+    </div>
+    {% endif %}
+
+    {% if kql_query %}
+    <div class="kql-row">
+        <dt>Constructed KQL Query</dt>
+        <pre class="kql-block">{{ kql_query }}</pre>
+    </div>
+    {% endif %}
+</section>
+{% endif %}
+
+{% if number_of_records is not none %}
+<section class="panel">
+    <h2>Log Analytics Results</h2>
+    <div class="stat-tile">
+        <span class="value">{{ number_of_records }}</span>
+        <span class="label">record{{ '' if number_of_records == 1 else 's' }} found</span>
+    </div>
+</section>
+{% endif %}
+
+{% if error_title %}
+<section class="panel error-panel">
+    <h2>{{ error_title }}</h2>
+    {% if error_message %}<p>{{ error_message }}</p>{% endif %}
+    {% if error_detail %}<pre class="error-detail">{{ error_detail }}</pre>{% endif %}
+</section>
+
+{% elif number_of_records == 0 %}
+<div class="panel empty-state">No log records matched — nothing to analyze.</div>
+
+{% elif hunt_results %}
+<section class="findings">
+    <div class="findings-header">
+        <h2>Threat Hunt Findings</h2>
+        <span class="findings-count">{{ hunt_results.findings|length }} finding{{ '' if hunt_results.findings|length == 1 else 's' }}</span>
+    </div>
+
+    {% if hunt_results.findings %}
+        {% for finding in hunt_results.findings %}
+            {% set level = finding.confidence|lower %}
+            <article class="finding-card confidence-{{ level }}">
+                <div class="finding-header">
+                    <h3>{{ finding.title }}</h3>
+                    <span class="badge badge-{{ level }}">{{ finding.confidence }}</span>
+                </div>
+
+                <p class="finding-description">{{ finding.description }}</p>
+
+                {% if finding.mitre %}
+                    <span class="mitre-badge">{{ finding.mitre.tactic }} &middot; {{ finding.mitre.id }}</span>
+                {% endif %}
+
+                {% if finding.recommendations %}
+                <div class="finding-section">
+                    <h4>Recommendations</h4>
+                    <ul class="pill-row">
+                        {% for recommendation in finding.recommendations %}
+                            <li>{{ recommendation }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+
+                {% if finding.indicators_of_compromise %}
+                <div class="finding-section">
+                    <h4>Indicators of Compromise</h4>
+                    <ul class="ioc-row">
+                        {% for indicator in finding.indicators_of_compromise %}
+                            <li>{{ indicator }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+
+                {% if finding.notes %}
+                <p class="finding-notes">{{ finding.notes }}</p>
+                {% endif %}
+            </article>
+        {% endfor %}
+    {% else %}
+        <div class="panel empty-state">No threats detected in the searched logs.</div>
+    {% endif %}
+</section>
+{% endif %}

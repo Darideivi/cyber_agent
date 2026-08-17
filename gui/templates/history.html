@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}History — Agentic SOC Analyst{% endblock %}
+
+{% block content %}
+
+    <header class="hero">
+        <h1>Threat Hunt History</h1>
+        <p>Every finding ever logged to <code>_threats.jsonl</code>, newest first.</p>
+    </header>
+
+    <form class="search-card" method="GET" action="{{ url_for('history') }}">
+        <input
+            type="text"
+            name="q"
+            value="{{ query }}"
+            placeholder="Search titles, descriptions, hosts, tags, IOCs..."
+            autofocus
+        >
+        <button type="submit">Search</button>
+    </form>
+
+    <p class="findings-count history-summary">{{ entries|length }} result{{ '' if entries|length == 1 else 's' }}{% if query %} for &ldquo;{{ query }}&rdquo;{% endif %}</p>
+
+    {% if entries %}
+        {% for entry in entries %}
+            {% set level = entry.confidence|default('')|lower %}
+            <article class="finding-card confidence-{{ level }}">
+                {% if entry.timestamp or entry.table_name or entry.question %}
+                <div class="history-meta">
+                    {% if entry.timestamp %}<span>{{ entry.timestamp }}</span>{% endif %}
+                    {% if entry.table_name %}<span class="mono">{{ entry.table_name }}</span>{% endif %}
+                    {% if entry.question %}<span class="history-question">&ldquo;{{ entry.question }}&rdquo;</span>{% endif %}
+                </div>
+                {% endif %}
+
+                <div class="finding-header">
+                    <h3>{{ entry.title }}</h3>
+                    {% if entry.confidence %}
+                        <span class="badge badge-{{ level }}">{{ entry.confidence }}</span>
+                    {% endif %}
+                </div>
+
+                <p class="finding-description">{{ entry.description }}</p>
+
+                {% if entry.mitre %}
+                    <span class="mitre-badge">{{ entry.mitre.tactic }} &middot; {{ entry.mitre.id }}</span>
+                {% endif %}
+
+                {% if entry.recommendations %}
+                <div class="finding-section">
+                    <h4>Recommendations</h4>
+                    <ul class="pill-row">
+                        {% for recommendation in entry.recommendations %}
+                            <li>{{ recommendation }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+
+                {% if entry.indicators_of_compromise %}
+                <div class="finding-section">
+                    <h4>Indicators of Compromise</h4>
+                    <ul class="ioc-row">
+                        {% for indicator in entry.indicators_of_compromise %}
+                            <li>{{ indicator }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+
+                {% if entry.notes %}
+                <p class="finding-notes">{{ entry.notes }}</p>
+                {% endif %}
+            </article>
+        {% endfor %}
+    {% else %}
+        <div class="panel empty-state">
+            {% if query %}No logged findings match that search.{% else %}Nothing logged yet — run an investigation first.{% endif %}
+        </div>
+    {% endif %}
+
+{% endblock %}

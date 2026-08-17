@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Agentic SOC Analyst{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="navbar-inner">
+            <a class="navbar-brand" href="{{ url_for('home') }}">
+                <span class="navbar-mark">&#9670;</span> Agentic SOC Analyst
+            </a>
+            <div class="navbar-links">
+                <a href="{{ url_for('home') }}" class="{{ 'active' if active_page == 'home' else '' }}">Home</a>
+                <a href="{{ url_for('history') }}" class="{{ 'active' if active_page == 'history' else '' }}">History</a>
+                <a href="{{ url_for('about') }}" class="{{ 'active' if active_page == 'about' else '' }}">About</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="page">
+        {% block content %}{% endblock %}
+    </div>
+
+    {% block scripts %}{% endblock %}
+</body>
+</html>

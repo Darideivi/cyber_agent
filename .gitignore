@@ -1,0 +1,15 @@
+# Secrets — never commit these
+_keys.py
+GUI_LEARNING_ROADMAP.md
+# Logged threat-hunt data (contains real hostnames/IPs/accounts from your environment)
+_threats.jsonl
+
+# Python
+__pycache__/
+*.pyc
+venv/
+gui/venv/
+
+# OS cruft
+.DS_Store
+Thumbs.db

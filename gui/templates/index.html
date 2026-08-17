@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+
+{% block title %}Agentic SOC Analyst{% endblock %}
+
+{% block content %}
+
+<header class="hero">
+
+    <div class="hero-badge">
+        <span class="status-dot"></span>
+        AI-POWERED THREAT HUNTING
+    </div>
+
+    <h1>
+        Agentic <span>SOC Analyst</span>
+    </h1>
+
+    <p>
+        Ask a security question in plain English.
+        The agent translates your intent into <strong>KQL</strong>,
+        queries <strong>Microsoft Defender</strong> telemetry,
+        and analyzes the results for potential threats.
+    </p>
+
+    <div class="hero-tech">
+        <span>Microsoft Defender</span>
+        <span>Azure Log Analytics</span>
+        <span>KQL</span>
+        <span>MITRE ATT&amp;CK</span>
+    </div>
+
+</header>
+
+    <form class="search-card" id="investigate-form">
+        <input
+            type="text"
+            id="question-input"
+            name="question"
+            placeholder="e.g. Has windows-target-1 had any suspicious logons in the last 3 days?"
+            autofocus
+        >
+        <button type="submit" id="investigate-btn">Investigate</button>
+    </form>
+
+    <div class="progress-panel panel" id="progress-panel" hidden>
+        <ul class="step-list">
+            <li class="step" data-step="context">
+                <span class="step-icon"></span>
+                <span class="step-label">Deciding log search parameters...</span>
+            </li>
+            <li class="step" data-step="guardrails">
+                <span class="step-icon"></span>
+                <span class="step-label">Validating tables and fields...</span>
+            </li>
+            <li class="step" data-step="query">
+                <span class="step-icon"></span>
+                <span class="step-label">Querying Log Analytics...</span>
+            </li>
+            <li class="step" data-step="prompt">
+                <span class="step-icon"></span>
+                <span class="step-label">Building threat hunt prompt...</span>
+            </li>
+            <li class="step" data-step="hunt">
+                <span class="step-icon"></span>
+                <span class="step-label">Running AI threat hunt...</span>
+            </li>
+        </ul>
+    </div>
+
+    <div id="results-container"></div>
+
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        const form = document.getElementById('investigate-form');
+        const input = document.getElementById('question-input');
+        const button = document.getElementById('investigate-btn');
+        const progressPanel = document.getElementById('progress-panel');
+        const resultsContainer = document.getElementById('results-container');
+        const steps = progressPanel.querySelectorAll('.step');
+
+        let currentSource = null;
+
+        function resetSteps() {
+            steps.forEach(function (s) {
+                s.classList.remove('active', 'done');
+            });
+        }
+
+        function markAllDone() {
+            steps.forEach(function (s) {
+                s.classList.remove('active');
+                s.classList.add('done');
+            });
+        }
+
+        function finishRequest() {
+            if (currentSource) {
+                currentSource.close();
+                currentSource = null;
+            }
+            button.disabled = false;
+            button.textContent = 'Investigate';
+        }
+
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+            const question = input.value.trim();
+            if (!question) return;
+            if (currentSource) currentSource.close();
+
+            resultsContainer.innerHTML = '';
+            resetSteps();
+            progressPanel.hidden = false;
+            button.disabled = true;
+            button.textContent = 'Investigating…';
+
+            const source = new EventSource('/investigate?question=' + encodeURIComponent(question));
+            currentSource = source;
+
+            source.addEventListener('progress', function (e) {
+                const data = JSON.parse(e.data);
+                steps.forEach(function (s) {
+                    if (s.dataset.step === data.step) {
+                        s.classList.add('active');
+                        s.classList.remove('done');
+                    } else if (s.classList.contains('active')) {
+                        s.classList.remove('active');
+                        s.classList.add('done');
+                    }
+                });
+            });
+
+            source.addEventListener('result', function (e) {
+                const data = JSON.parse(e.data);
+                markAllDone();
+                resultsContainer.innerHTML = data.html;
+                finishRequest();
+                setTimeout(function () { progressPanel.hidden = true; }, 400);
+            });
+
+            source.onerror = function () {
+                if (!currentSource) return;
+                resultsContainer.innerHTML = '<div class="panel error-panel"><h2>Connection Lost</h2><p>The stream was interrupted. Check the server terminal and try again.</p></div>';
+                progressPanel.hidden = true;
+                finishRequest();
+            };
+        });
+    </script>
+{% endblock %}
