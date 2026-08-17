@@ -12,8 +12,10 @@ This project started as a command-line threat hunting agent (`_main.py`) and gre
 
 ### 1. Home Page
 
-Home page — ask a security question in plain English(<img width="1438" height="672" alt="Agentic-1" src="https://github.com/user-attachments/assets/3f9aa795-61ac-455c-bdde-edb85fee4688" />
-)
+Home page — ask a security question in plain English
+
+<img width="1438" height="672" alt="Agentic-1" src="https://github.com/user-attachments/assets/3f9aa795-61ac-455c-bdde-edb85fee4688" />
+
 
 
 
