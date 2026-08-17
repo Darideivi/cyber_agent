@@ -14,13 +14,17 @@ This project started as a command-line threat hunting agent (`_main.py`) and gre
 
 ![Home page — ask a security question in plain English](PASTE_SCREENSHOT_HERE)
 
+<img width="1438" height="672" alt="Agentic-1" src="https://github.com/user-attachments/assets/3f9aa795-61ac-455c-bdde-edb85fee4688" />
+
+
 The landing page. A user types a question like *"Has windows-target-1 had any suspicious logons in the last 3 days?"* and hits **Investigate**. The page opens a Server-Sent Events (SSE) stream and shows live progress as the agent works through query planning, guardrail validation, the Log Analytics query, and the AI threat hunt.
 
 ---
 
 ### 2. Running the Flask App
 
-![Terminal running the Flask development server](PASTE_SCREENSHOT_HERE)
+![Terminal running the Flask development server](<img width="1222" height="952" alt="Agentic-01" src="https://github.com/user-attachments/assets/1ece1bb0-229b-4f11-b323-88ed4b961999" />
+)
 
 `python gui/app.py` starts the Flask dev server, which wraps the same pipeline the CLI (`_main.py`) uses — so the web app and the terminal tool share one core engine instead of duplicating logic.
 
