@@ -1,6 +1,7 @@
 # Agentic SOC Analyst
 
 An AI-powered threat hunting assistant that turns plain-English security questions into KQL, queries Microsoft Defender telemetry through Azure Log Analytics, and analyzes the results for potential threats — mapped to MITRE ATT&CK, scored by confidence, and logged to a searchable history.
+
 <img width="596" height="404" alt="Agentic-4" src="https://github.com/user-attachments/assets/3ec5d70f-c1f6-473a-871e-a47e567e220a" />
 
 ---
