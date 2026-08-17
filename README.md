@@ -29,13 +29,13 @@ Terminal running the Flask development server
 <img width="1222" height="952" alt="Agentic-01" src="https://github.com/user-attachments/assets/1ece1bb0-229b-4f11-b323-88ed4b961999" />
 
 
-`python gui/app.py` starts the Flask dev server, which wraps the same pipeline the CLI (`_main.py`) uses — so the web app and the terminal tool share one core engine instead of duplicating logic.
+`python gui/app.py` starts the Flask dev server, which wraps the same pipeline the CLI (`_main.py`) uses, so the web app and the terminal tool share one core engine instead of duplicating logic.
 
 ---
 
 ### 3. About Page
 
-About page — what the agent does and how the workflow is structured
+About page:  what the agent does and how the workflow is structured
 
 <img width="843" height="902" alt="Agentic-3" src="https://github.com/user-attachments/assets/1316d32d-0903-457f-a183-3d122d6732db" />
 
