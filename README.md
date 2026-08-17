@@ -1,6 +1,6 @@
 # Agentic SOC Analyst
 
-An AI-powered threat hunting assistant that turns plain-English security questions into KQL, queries Microsoft Defender telemetry through Azure Log Analytics, and analyzes the results for potential threats — mapped to MITRE ATT&CK, scored by confidence, and logged to a searchable history.
+An AI-powered threat hunting assistant that turns plain-English security questions into KQL, queries Microsoft Defender telemetry through Azure Log Analytics, and analyzes the results for potential threats, mapped to MITRE ATT&CK, scored by confidence, and logged to a searchable history.
 
 <img width="596" height="404" alt="Agentic-4" src="https://github.com/user-attachments/assets/3ec5d70f-c1f6-473a-871e-a47e567e220a" />
 
@@ -12,7 +12,7 @@ This project started as a command-line threat hunting agent (`_main.py`) and gre
 
 ### 1. Home Page
 
-Home page — ask a security question in plain English
+Home page:  ask a security question in plain English
 
 <img width="1438" height="672" alt="Agentic-1" src="https://github.com/user-attachments/assets/3f9aa795-61ac-455c-bdde-edb85fee4688" />
 
@@ -46,7 +46,7 @@ Explains the request lifecycle: **Natural Language → AI Query Planning → Gua
 
 ### 4. Threat Hunt History
 
-Threat hunt history — every finding ever logged, searchable
+Threat hunt history: every finding ever logged, searchable
 
 <img width="1013" height="908" alt="Agentic-2" src="https://github.com/user-attachments/assets/3044d40f-b066-494c-bb67-59e67c631189" />
 
