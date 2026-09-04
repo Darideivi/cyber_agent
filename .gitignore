@@ -2,7 +2,6 @@
 _keys.py
 .env
 GUI_LEARNING_ROADMAP.md
-# Logged threat-hunt data (contains real hostnames/IPs/accounts from your environment)
 _threats.jsonl
 
 # Python

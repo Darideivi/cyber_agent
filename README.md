@@ -1,6 +1,8 @@
 # Agentic SOC Analyst
 
-An AI-powered threat hunting assistant that turns plain-English security questions into KQL, queries Microsoft Defender telemetry through Azure Log Analytics, and analyzes the results for potential threats — mapped to MITRE ATT&CK, scored by confidence, and logged to a searchable history.
+An AI-powered threat hunting assistant that turns plain-English security questions into KQL, queries Microsoft Defender telemetry through Azure Log Analytics, and analyzes the results for potential threats, mapped to MITRE ATT&CK, scored by confidence, and logged to a searchable history.
+
+<img width="596" height="404" alt="Agentic-4" src="https://github.com/user-attachments/assets/3ec5d70f-c1f6-473a-871e-a47e567e220a" />
 
 ---
 
@@ -10,7 +12,12 @@ This project started as a command-line threat hunting agent (`_main.py`) and gre
 
 ### 1. Home Page
 
-![Home page — ask a security question in plain English](PASTE_SCREENSHOT_HERE)
+Home page:  ask a security question in plain English
+
+<img width="1438" height="672" alt="Agentic-1" src="https://github.com/user-attachments/assets/3f9aa795-61ac-455c-bdde-edb85fee4688" />
+
+
+
 
 The landing page. A user types a question like *"Has windows-target-1 had any suspicious logons in the last 3 days?"* and hits **Investigate**. The page opens a Server-Sent Events (SSE) stream and shows live progress as the agent works through query planning, guardrail validation, the Log Analytics query, and the AI threat hunt.
 
@@ -18,15 +25,20 @@ The landing page. A user types a question like *"Has windows-target-1 had any su
 
 ### 2. Running the Flask App
 
-![Terminal running the Flask development server](PASTE_SCREENSHOT_HERE)
+Terminal running the Flask development server
+<img width="1222" height="952" alt="Agentic-01" src="https://github.com/user-attachments/assets/1ece1bb0-229b-4f11-b323-88ed4b961999" />
 
-`python gui/app.py` starts the Flask dev server, which wraps the same pipeline the CLI (`_main.py`) uses — so the web app and the terminal tool share one core engine instead of duplicating logic.
+
+`python gui/app.py` starts the Flask dev server, which wraps the same pipeline the CLI (`_main.py`) uses, so the web app and the terminal tool share one core engine instead of duplicating logic.
 
 ---
 
 ### 3. About Page
 
-![About page — what the agent does and how the workflow is structured](PASTE_SCREENSHOT_HERE)
+About page:  what the agent does and how the workflow is structured
+
+<img width="843" height="902" alt="Agentic-3" src="https://github.com/user-attachments/assets/1316d32d-0903-457f-a183-3d122d6732db" />
+
 
 Explains the request lifecycle: **Natural Language → AI Query Planning → Guardrails → Azure Log Analytics → Threat Analysis**. The AI decides which table, fields, and time range are relevant to the question; those choices are checked against an allow-list before any KQL is allowed to run.
 
@@ -34,7 +46,10 @@ Explains the request lifecycle: **Natural Language → AI Query Planning → Gua
 
 ### 4. Threat Hunt History
 
-![Threat hunt history — every finding ever logged, searchable](PASTE_SCREENSHOT_HERE)
+Threat hunt history: every finding ever logged, searchable
+
+<img width="1013" height="908" alt="Agentic-2" src="https://github.com/user-attachments/assets/3044d40f-b066-494c-bb67-59e67c631189" />
+
 
 Every finding produced by a hunt is appended to `_threats.jsonl` and rendered here, newest first, with full-text search over titles, descriptions, hosts, tags, and IOCs. It's the audit trail — a record of every question asked and every threat the agent surfaced.
 
