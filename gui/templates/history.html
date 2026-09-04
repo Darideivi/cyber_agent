@@ -30,7 +30,7 @@
                 <div class="history-meta">
                     {% if entry.timestamp %}<span>{{ entry.timestamp }}</span>{% endif %}
                     {% if entry.table_name %}<span class="mono">{{ entry.table_name }}</span>{% endif %}
-                    {% if entry.question %}<span class="history-question">&ldquo;{{ entry.question }}&rdquo;</span>{% endif %}
+                    {% if entry.question %}<span class="history-question">{{ entry.question }}</span>{% endif %}
                 </div>
                 {% endif %}
 
@@ -44,7 +44,7 @@
                 <p class="finding-description">{{ entry.description }}</p>
 
                 {% if entry.mitre %}
-                    <span class="mitre-badge">{{ entry.mitre.tactic }} &middot; {{ entry.mitre.id }}</span>
+                    <span class="mitre-badge">{{ entry.mitre.tactic }} ({{ entry.mitre.id }})</span>
                 {% endif %}
 
                 {% if entry.recommendations %}

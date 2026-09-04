@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block title %}Agentic SOC Analyst{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 
@@ -11,7 +14,7 @@
     <nav class="navbar">
         <div class="navbar-inner">
             <a class="navbar-brand" href="{{ url_for('home') }}">
-                <span class="navbar-mark">&#9670;</span> Agentic SOC Analyst
+                <span class="navbar-mark">&#9642;</span> agentic-soc
             </a>
             <div class="navbar-links">
                 <a href="{{ url_for('home') }}" class="{{ 'active' if active_page == 'home' else '' }}">Home</a>

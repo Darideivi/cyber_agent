@@ -8,12 +8,10 @@
 
     <div class="hero-badge">
         <span class="status-dot"></span>
-        AI-POWERED THREAT HUNTING
+        threat hunting agent
     </div>
 
-    <h1>
-        Agentic <span>SOC Analyst</span>
-    </h1>
+    <h1>Agentic SOC Analyst</h1>
 
     <p>
         Ask a security question in plain English.
@@ -32,18 +30,19 @@
 </header>
 
     <form class="search-card" id="investigate-form">
+        <span class="prompt-glyph">&gt;</span>
         <input
             type="text"
             id="question-input"
             name="question"
-            placeholder="e.g. Has windows-target-1 had any suspicious logons in the last 3 days?"
+            placeholder="has windows-target-1 had any suspicious logons in the last 3 days?"
             autofocus
         >
         <input
             type="password"
             id="password-input"
             name="key"
-            placeholder="Demo password"
+            placeholder="demo password"
         >
         <button type="submit" id="investigate-btn">Investigate</button>
     </form>
@@ -59,22 +58,27 @@
     <div class="progress-panel panel" id="progress-panel" hidden>
         <ul class="step-list">
             <li class="step" data-step="context">
+                <span class="step-num"></span>
                 <span class="step-icon"></span>
                 <span class="step-label">Deciding log search parameters...</span>
             </li>
             <li class="step" data-step="guardrails">
+                <span class="step-num"></span>
                 <span class="step-icon"></span>
                 <span class="step-label">Validating tables and fields...</span>
             </li>
             <li class="step" data-step="query">
+                <span class="step-num"></span>
                 <span class="step-icon"></span>
                 <span class="step-label">Querying sample log dataset...</span>
             </li>
             <li class="step" data-step="prompt">
+                <span class="step-num"></span>
                 <span class="step-icon"></span>
                 <span class="step-label">Building threat hunt prompt...</span>
             </li>
             <li class="step" data-step="hunt">
+                <span class="step-num"></span>
                 <span class="step-icon"></span>
                 <span class="step-label">Running AI threat hunt...</span>
             </li>

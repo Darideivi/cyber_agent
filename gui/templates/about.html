@@ -21,17 +21,13 @@
             &ldquo;Has windows-target-1 had any suspicious logons in the last 3 days?&rdquo;
         </div>
 
-        <div class="workflow">
-            <div class="workflow-step">Natural Language</div>
-            <div class="workflow-arrow">&rarr;</div>
-            <div class="workflow-step">AI Query Planning</div>
-            <div class="workflow-arrow">&rarr;</div>
-            <div class="workflow-step">Guardrails</div>
-            <div class="workflow-arrow">&rarr;</div>
-            <div class="workflow-step">Azure Log Analytics</div>
-            <div class="workflow-arrow">&rarr;</div>
-            <div class="workflow-step">Threat Analysis</div>
-        </div>
+        <ol class="pipeline">
+            <li>Natural language question comes in</li>
+            <li>The model plans a table, fields, and time range</li>
+            <li>Guardrails validate the plan against an allow-list</li>
+            <li>The KQL query runs against Log Analytics</li>
+            <li>The model analyzes results for threats</li>
+        </ol>
 
         <p>
             The agent determines which Log Analytics table, fields, and time range
@@ -45,20 +41,21 @@
             indicators of compromise and recommended actions.
         </p>
 
-        <p>
+        <div class="demo-note">
             <strong>About this public demo:</strong> the AI query planning and threat-hunt
             analysis you see here are real, live OpenAI calls. The underlying agent is built
             to run against a real Microsoft Defender / Azure Log Analytics workspace (that's
             what powers the local/CLI version of this tool) &mdash; but this hosted demo swaps
             that step for a small bundled sample dataset instead, so anyone can try it without
             querying live security telemetry or needing Azure credentials.
-        </p>
+        </div>
     </section>
 
     <section class="panel about-panel">
         <h2>Credits</h2>
 
-        <div class="credit-card">
+        <div class="credit-list">
+        <div class="credit-item">
             <h3>Threat Hunting Engine</h3>
             <p>
                 The core AI threat-hunting logic, log analysis, guardrails,
@@ -67,7 +64,7 @@
             </p>
         </div>
 
-        <div class="credit-card">
+        <div class="credit-item">
             <h3>Web Application</h3>
             <p>
                 The Flask web application, browser interface, backend integration,
@@ -87,6 +84,7 @@
                     GitHub
                 </a>
             </div>
+        </div>
         </div>
     </section>
 

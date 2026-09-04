@@ -79,7 +79,7 @@
                 <p class="finding-description">{{ finding.description }}</p>
 
                 {% if finding.mitre %}
-                    <span class="mitre-badge">{{ finding.mitre.tactic }} &middot; {{ finding.mitre.id }}</span>
+                    <span class="mitre-badge">{{ finding.mitre.tactic }} ({{ finding.mitre.id }})</span>
                 {% endif %}
 
                 {% if finding.recommendations %}
