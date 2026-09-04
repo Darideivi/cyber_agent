@@ -1,0 +1,8 @@
+venv/
+gui/venv/
+__pycache__/
+*.pyc
+_threats.jsonl
+_keys.py
+GUI_LEARNING_ROADMAP.md
+.env

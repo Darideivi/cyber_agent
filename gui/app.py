@@ -1,38 +1,43 @@
 # pyright: reportMissingImports=false
 
+import hmac
 import json
 import os
 import sys
 from datetime import datetime
 
+from dotenv import load_dotenv
 from flask import Flask, Response, render_template, request, stream_with_context
 from openai import OpenAI
-from azure.identity import DefaultAzureCredential
-from azure.monitor.query import LogsQueryClient
 
 # Allow Python to find modules in the cyber_agent parent folder
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(PROJECT_ROOT)
+
+# Loads a local .env file for `python gui/app.py` / `vercel dev` runs.
+# No-op in production, where these are set as real Vercel env vars.
+load_dotenv(os.path.join(PROJECT_ROOT, ".env"))
 
 # Existing cyber agent modules
 import EXECUTOR
 import PROMPT_MANAGEMENT
 import MODEL_MANAGEMENT
 import UTILITIES
-import _keys
 import GUARDRAILS
 
-# Always read/write the same history file the CLI uses, regardless of the
-# working directory Flask happens to be started from.
-THREATS_LOG_PATH = os.path.join(PROJECT_ROOT, "_threats.jsonl")
-
 # Set up OpenAI
-openai_client = OpenAI(api_key=_keys.OPENAI_API_KEY)
+openai_client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
 model = MODEL_MANAGEMENT.DEFAULT_MODEL
 
-law_client = LogsQueryClient(
-    credential=DefaultAzureCredential()
-)
+# The public demo runs the real query-planning + threat-hunt AI calls, but
+# against a bundled synthetic dataset (DEMO_DATA.py / EXECUTOR.query_demo_data)
+# instead of a live Azure Log Analytics query, so no Azure credential is
+# needed to deploy this app. The CLI (_main.py) is unaffected and still
+# queries the real workspace via _keys.py + DefaultAzureCredential.
+
+# Password required to run a live investigation, so a public visitor can't
+# spend the owner's OpenAI balance on repeated requests.
+INVESTIGATE_PASSWORD = os.environ["INVESTIGATE_PASSWORD"]
 
 
 # Start Flask app
@@ -74,11 +79,8 @@ def run_investigation(question):
         yield sse_pack("result", {"html": html})
         return
 
-    yield sse_pack("progress", {"step": "query", "label": "Querying Log Analytics..."})
-    law_query_results = EXECUTOR.query_log_analytics(
-        log_analytics_client=law_client,
-        workspace_id=_keys.LOG_ANALYTICS_WORKSPACE_ID,
-        timerange_hours=query_context["time_range_hours"],
+    yield sse_pack("progress", {"step": "query", "label": "Querying sample log dataset..."})
+    law_query_results = EXECUTOR.query_demo_data(
         table_name=query_context["table_name"],
         device_name=query_context["device_name"],
         fields=query_context["fields"],
@@ -133,11 +135,10 @@ def run_investigation(question):
         yield sse_pack("result", {"html": html})
         return
 
-    UTILITIES.append_threats_to_jsonl(
+    UTILITIES.append_threats_to_postgres(
         hunt_results.get("findings", []),
         question=question,
         table_name=query_context["table_name"],
-        filename=THREATS_LOG_PATH,
     )
 
     html = render_template(
@@ -162,10 +163,28 @@ def home():
 @app.route("/investigate")
 def investigate():
     question = request.args.get("question", "").strip()
+    key = request.args.get("key", "")
 
     if not question:
         return Response(
             sse_pack("result", {"html": "<div class=\"panel error-panel\"><h2>No Question Provided</h2></div>"}),
+            mimetype="text/event-stream",
+        )
+
+    if not hmac.compare_digest(key, INVESTIGATE_PASSWORD):
+        html = render_template(
+            "results.html",
+            question=question,
+            query_context=None,
+            kql_query=None,
+            number_of_records=None,
+            hunt_results=None,
+            error_title="Password Required",
+            error_message="This is a public demo. Live investigations make real OpenAI calls on the owner's balance, so they require a password.",
+            error_detail=None,
+        )
+        return Response(
+            sse_pack("result", {"html": html}),
             mimetype="text/event-stream",
         )
 
@@ -193,22 +212,7 @@ def investigate():
 @app.route("/history")
 def history():
     query = request.args.get("q", "").strip().lower()
-    entries = []
-
-    if os.path.exists(THREATS_LOG_PATH):
-        with open(THREATS_LOG_PATH, "r", encoding="utf-8") as f:
-            for line in f:
-                line = line.strip()
-                if not line:
-                    continue
-                try:
-                    entries.append(json.loads(line))
-                except json.JSONDecodeError:
-                    continue
-
-    # File is append-only, so reversing gives newest-first without
-    # relying on a timestamp field (older entries don't have one).
-    entries.reverse()
+    entries = UTILITIES.fetch_threats_from_postgres()
 
     for entry in entries:
         raw_timestamp = entry.get("timestamp")

@@ -39,8 +39,22 @@
             placeholder="e.g. Has windows-target-1 had any suspicious logons in the last 3 days?"
             autofocus
         >
+        <input
+            type="password"
+            id="password-input"
+            name="key"
+            placeholder="Demo password"
+        >
         <button type="submit" id="investigate-btn">Investigate</button>
     </form>
+
+    <p class="search-hint">
+        This is a public demo — the AI query planning and threat-hunt analysis below are real
+        (and run on the owner's OpenAI balance), against a bundled sample dataset rather than
+        live production telemetry. It's still password-protected to prevent abuse.
+        Browse the <a href="{{ url_for('history') }}">History</a> page to see past findings
+        without one.
+    </p>
 
     <div class="progress-panel panel" id="progress-panel" hidden>
         <ul class="step-list">
@@ -54,7 +68,7 @@
             </li>
             <li class="step" data-step="query">
                 <span class="step-icon"></span>
-                <span class="step-label">Querying Log Analytics...</span>
+                <span class="step-label">Querying sample log dataset...</span>
             </li>
             <li class="step" data-step="prompt">
                 <span class="step-icon"></span>
@@ -75,6 +89,7 @@
     <script>
         const form = document.getElementById('investigate-form');
         const input = document.getElementById('question-input');
+        const passwordInput = document.getElementById('password-input');
         const button = document.getElementById('investigate-btn');
         const progressPanel = document.getElementById('progress-panel');
         const resultsContainer = document.getElementById('results-container');
@@ -116,7 +131,11 @@
             button.disabled = true;
             button.textContent = 'Investigating…';
 
-            const source = new EventSource('/investigate?question=' + encodeURIComponent(question));
+            const key = passwordInput.value;
+            const source = new EventSource(
+                '/investigate?question=' + encodeURIComponent(question) +
+                '&key=' + encodeURIComponent(key)
+            );
             currentSource = source;
 
             source.addEventListener('progress', function (e) {

@@ -1,6 +1,9 @@
 import json
+import os
 from datetime import datetime, timezone
 from colorama import Fore, Style, init
+import psycopg
+from psycopg.types.json import Jsonb
 
 
 def display_query_context(query_context):
@@ -108,5 +111,52 @@ def sanitize_query_context(query_context):
         query_context['user_principal_name'] = sanitize_literal(query_context['user_principal_name'])
 
     query_context["fields"] = ', '.join(query_context["fields"])
-    
+
     return query_context
+
+# ---------------------------------------------------------------------------
+# Postgres-backed threat history for the deployed web app (gui/app.py).
+# Separate from append_threats_to_jsonl/display_threats above, which the CLI
+# (_main.py) keeps using against the local _threats.jsonl file unchanged.
+# ---------------------------------------------------------------------------
+
+def get_postgres_connection():
+    return psycopg.connect(os.environ["POSTGRES_URL"])
+
+def ensure_threats_table(conn):
+    with conn.cursor() as cur:
+        cur.execute("""
+            CREATE TABLE IF NOT EXISTS threats (
+                id SERIAL PRIMARY KEY,
+                created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+                entry JSONB NOT NULL
+            )
+        """)
+    conn.commit()
+
+def append_threats_to_postgres(threat_list, question="", table_name=""):
+    timestamp = datetime.now(timezone.utc).isoformat()
+    conn = get_postgres_connection()
+    try:
+        ensure_threats_table(conn)
+        with conn.cursor() as cur:
+            for threat in threat_list:
+                entry = dict(threat)
+                entry["timestamp"] = timestamp
+                entry["question"] = question
+                entry["table_name"] = table_name
+                cur.execute("INSERT INTO threats (entry) VALUES (%s)", (Jsonb(entry),))
+        conn.commit()
+    finally:
+        conn.close()
+
+def fetch_threats_from_postgres():
+    conn = get_postgres_connection()
+    try:
+        ensure_threats_table(conn)
+        with conn.cursor() as cur:
+            cur.execute("SELECT entry FROM threats ORDER BY created_at DESC")
+            rows = cur.fetchall()
+        return [row[0] for row in rows]
+    finally:
+        conn.close()

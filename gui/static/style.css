@@ -224,7 +224,8 @@ h1, h2, h3 { line-height: 1.25; }
   margin-bottom: 32px;
 }
 
-.search-card input[type="text"] {
+.search-card input[type="text"],
+.search-card input[type="password"] {
   flex: 1;
   border: none;
   outline: none;
@@ -235,8 +236,21 @@ h1, h2, h3 { line-height: 1.25; }
   font-family: inherit;
 }
 
-.search-card input[type="text"]::placeholder {
+.search-card input[type="password"] {
+  flex: 0 0 200px;
+  border-left: 1px solid var(--border);
+  border-radius: 0;
+}
+
+.search-card input[type="text"]::placeholder,
+.search-card input[type="password"]::placeholder {
   color: var(--text-muted);
+}
+
+.search-hint {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  margin: -20px 0 32px;
 }
 
 .search-card button {
